@@ -1,8 +1,9 @@
 #include "Header.h"
 
-Liste *initialisation() {
+Liste* initialisation() {
     Liste *liste = malloc(sizeof(*liste));
     Element *element = malloc(sizeof(*element));
+
 
     if(liste == NULL || element == NULL) {
         exit(EXIT_FAILURE);
@@ -10,21 +11,25 @@ Liste *initialisation() {
 
     element->donnee = 0;
     element->suivant = NULL;
+
     liste->premier = element;
+    liste->taille = 1;
 
     return liste;
 }
 
 void insertion(Liste *liste, void* donnee) {
-    Element *element = malloc(sizeof(*element));
+    Element *nouvelleElement = malloc(sizeof(*nouvelleElement));
 
-    if(liste == NULL || element == NULL) {
+    if(liste == NULL || nouvelleElement == NULL) {
         exit(EXIT_FAILURE);
     }
 
-    element->donnee = donnee;
-    element->suivant = liste->premier;
-    liste->premier = element;
+    nouvelleElement->donnee = donnee;
+    nouvelleElement->suivant = liste->premier;
+
+    liste->premier = nouvelleElement;
+    liste->taille += 1;
 }
 
 void suppression(Liste *liste) {
@@ -34,20 +39,35 @@ void suppression(Liste *liste) {
 
     if(liste->premier != NULL) {
         Element *aSupprimer = liste->premier;
-        liste->premier = liste->premier->suivant;
+        liste->premier = aSupprimer->suivant;
+        liste->taille -= 1;
         free(aSupprimer);
     }
 }
 
-int main() {
-    Liste *liste;
-    liste = initialisation();
+void afficher(Liste *liste) {
+    if(liste == NULL) {
+        exit(EXIT_FAILURE);
+    }
 
-    insertion(liste, "chaine");
-    insertion(liste, 13);
+    Element *elementActuel = liste->premier;
+
+    while(elementActuel != NULL) {
+        printf("%d -> ", elementActuel->donnee);
+        elementActuel = elementActuel->suivant;
+    }
+    printf("NULL");
+}
+
+int main() {
+    Liste *liste = initialisation();
+
+    insertion(liste, 67);
+    insertion(liste, 55);
+    insertion(liste, 18);
     suppression(liste);
 
-    printf("%s", liste->premier->donnee);
+    afficher(liste);
 
     return 0;
 }
